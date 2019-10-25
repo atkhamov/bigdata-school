@@ -1,0 +1,19 @@
+1 Introduction
+  1.1 Messaging Systems Overview/Comparison
+  1.2 Kafka Design
+2 Installation
+    2.1 Single Node
+3 Ops. Basic Kafka administering, CLI
+4 Dev. Consumer/Producer
+    4.1 Producer
+    4.2 Consumer
+    4.3 Consumer explained (seek, read from offset, read from timestamp, consumer groups)
+5 Project 1. Source - Producer - Kafka - Consumer - Dest
+6 Kafka Connect
+7 Kafka Streaming
+8 Advanced Ops
+    9.1 Multi-broker Installation
+    9.2 Advanced configuration/tuning
+    9.3 Monitoring
+    9.4 Docker
+9 Final Project. Project 1 + Connect + Streaming(?)

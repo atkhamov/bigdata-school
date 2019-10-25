@@ -1,0 +1,69 @@
+####
+## Copy ProducerDemo class
+####
+
+
+####
+## Write ProducerKeyDemo class
+####
+
+Refactor code. Create values for topic, value and key
+Set one line output
+demo key distribution
+
+
+
+class ProducerKeyDemo:
+##################################
+package kz.beeline.bigdata.amadraimov.KafkaProducer;
+
+import org.apache.kafka.clients.producer.*;
+import org.apache.kafka.common.serialization.StringSerializer;
+
+import java.sql.Timestamp;
+import java.util.Date;
+import java.util.Properties;
+import java.util.concurrent.ExecutionException;
+
+public class ProducerKeyDemo {
+    public static void main(String[] args) throws ExecutionException, InterruptedException {
+        String bootstrapServers = "127.0.0.1:9092";
+        Properties properties = new Properties();
+        properties.setProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+        properties.setProperty(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
+        properties.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
+
+        KafkaProducer<String, String> producer = new KafkaProducer<String, String>(properties);
+
+        //long start_time = System.currentTimeMillis();
+        for (int i = 0; i < 1000; i++) {
+
+            String topic = "test_01";
+            //String key = "key_02";
+            String key = "key_" + i;
+            String value = "message from IDEA #" + i;
+
+            ProducerRecord<String, String> record = new ProducerRecord<String, String>(topic, key, value);
+
+            producer.send(record, new Callback() {
+                public void onCompletion(RecordMetadata recordMetadata, Exception e) {
+                    if (e == null) {
+                        Date date = new Date(new Timestamp(recordMetadata.timestamp()).getTime());
+                        System.out.printf("%s,topic %s,part %s,offset %s%n", date.toString(),
+                                recordMetadata.topic(), recordMetadata.partition(), recordMetadata.offset());
+                    } else {
+                        System.out.println("Exception: " + e.getMessage());
+                    }
+                }
+            });
+        }
+        producer.flush();
+        //long end_time = System.currentTimeMillis();
+        producer.close();
+
+        //System.out.println("Time spent: " + (end_time - start_time));
+    }
+}
+
+##################################
+

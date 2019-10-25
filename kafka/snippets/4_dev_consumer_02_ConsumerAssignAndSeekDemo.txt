@@ -1,0 +1,135 @@
+####
+## Create ConsumerAssignAndSeekDemo Class
+####
+
+
+####
+## Write ConsumerAssignAndSeekDemo class
+####
+
+remove subscribe
+assign to topic partition
+seek
+
+
+class ConsumerAssignAndSeekDemo:
+##################################
+package kz.beeline.bigdata.amadraimov.KafkaProducer;
+
+import org.apache.kafka.clients.consumer.ConsumerConfig;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.apache.kafka.clients.consumer.ConsumerRecords;
+import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.common.TopicPartition;
+import org.apache.kafka.common.serialization.StringDeserializer;
+
+import java.sql.Timestamp;
+import java.time.Duration;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.Properties;
+
+public class ConsumerAssignAndSeekDemo {
+    public static void main(String[] args) {
+
+        String bootstrapServers = "127.0.0.1:9092";
+        String groupId = "idea-01";
+        String topic = "test_01";
+
+        // create configs
+        Properties properties = new Properties();
+        properties.setProperty(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+        properties.setProperty(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
+        properties.setProperty(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
+        properties.setProperty(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+
+        // create consumer
+        KafkaConsumer<String, String> consumer = new KafkaConsumer<String, String>(properties);
+
+        // assign
+        TopicPartition partition = new TopicPartition(topic, 0);
+        consumer.assign(Arrays.asList(partition));
+
+        // seek
+        long offset = 1400;
+        consumer.seek(partition, offset);
+
+        // poll data
+        while (true){
+            ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(100));
+
+            for (ConsumerRecord<String, String> record : records){
+                Date date = new Date(new Timestamp(record.timestamp()).getTime());
+                System.out.printf("%s,topic %s,part %s,offset %s,key %s,value %s%n", date.toString(),
+                        record.topic(), record.partition(), record.offset(), record.key(), record.value());
+            }
+        }
+
+
+    }
+}
+##################################
+
+
+class ConsumerAssignAndSeekDemo with counter:
+##################################
+package kz.beeline.bigdata.amadraimov.KafkaProducer;
+
+import org.apache.kafka.clients.consumer.ConsumerConfig;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.apache.kafka.clients.consumer.ConsumerRecords;
+import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.common.TopicPartition;
+import org.apache.kafka.common.serialization.StringDeserializer;
+
+import java.sql.Timestamp;
+import java.time.Duration;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.Properties;
+
+public class ConsumerAssignAndSeekDemo {
+    public static void main(String[] args) {
+
+        String bootstrapServers = "127.0.0.1:9092";
+        String groupId = "idea-01";
+        String topic = "test_01";
+
+        // create configs
+        Properties properties = new Properties();
+        properties.setProperty(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+        properties.setProperty(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
+        properties.setProperty(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
+        properties.setProperty(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+
+        // create consumer
+        KafkaConsumer<String, String> consumer = new KafkaConsumer<String, String>(properties);
+
+        // assign
+        TopicPartition partition = new TopicPartition(topic, 0);
+        consumer.assign(Arrays.asList(partition));
+
+        // seek
+        long offset = 1400;
+        consumer.seek(partition, offset);
+
+        // poll data
+        int readCount = 10;
+        boolean read = true;
+        while (read){
+            ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(100));
+
+            for (ConsumerRecord<String, String> record : records){
+                readCount--;
+                Date date = new Date(new Timestamp(record.timestamp()).getTime());
+                System.out.printf("%s,topic %s,part %s,offset %s,key %s,value %s%n", date.toString(),
+                        record.topic(), record.partition(), record.offset(), record.key(), record.value());
+                if (readCount == 0) {
+                    read = false;
+                    break;
+                }
+            }
+        }
+    }
+}
+##################################

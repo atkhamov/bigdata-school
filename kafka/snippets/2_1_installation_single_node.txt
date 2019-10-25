@@ -1,0 +1,19 @@
+2.1 Installation - Single node
+mkdir -p bigdata_school/kafka
+cd !$
+wget https://www-us.apache.org/dist/kafka/2.3.0/kafka_2.12-2.3.0.tgz
+tar -xvf kafka_2.12-2.3.0.tgz
+ln -s kafka_2.12-2.3.0 current
+vim ~/.bashrc
+    export PATH="$PATH:$HOME/bigdata_school/kafka/current/bin"
+mkdir -p data/zookeeper
+mkdir -p data/kafka
+vim config/zookeeper.properties
+    dataDir=/home/amadraimov/bigdata_school/kafka/current/data/zookeeper
+zookeeper-server-start.sh -daemon config/zookeeper.properties
+check data and log dirs
+vim config/server.properties
+    log.dirs=/home/amadraimov/bigdata_school/kafka/current/data/kafka
+kafka-server-start.sh -daemon config/server.properties
+check data and log dirs
+check process and port

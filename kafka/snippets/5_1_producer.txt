@@ -1,0 +1,33 @@
+Part 1 Simple producer
+1) create new package producerlab1
+2) create class LocalCsvProducer
+3) create new topic
+4) start consumer
+5) send data to new topic
+
+Part 2 Producer configs
+1) acks
+    min.insync.replicas=2, replication.factor=3, acks=all
+        min.insync.replicas - Настройка на стороне брокера которая указывает 
+        кол-во реплик необходимое для отправки подтверждения доставки при acks=all
+        If this minimum cannot be met, then the producer will raise an exception 
+        (either NotEnoughReplicas or NotEnoughReplicasAfterAppend)
+2) retries
+    retries
+        кол-во попыток переотправки сообщений при ошибках.
+    max.in.flight.requests.per.connection
+        Максимальное количество запросов(батчей) которые могут быть отправлены
+        без получения подтверждения от брокера
+        The maximum number of unacknowledged requests the client will send on a 
+        single connection before blocking. Note that if this setting is set to be
+        greater than 1 and there are failed sends, there is a risk of message 
+        re-ordering due to retries (i.e., if retries are enabled).
+    При уставновке max.in.flight.requests.per.connection > 1, возможно нарушение
+    очередности. Один батч зафейлился и был переотправлен после следующих за необходимо
+3) Idempotent producer
+    https://issues.apache.org/jira/browse/KAFKA-5494
+    1 2 3 4 5 
+                4 5
+                    1 2 3
+4 5 6 7 8
+            7

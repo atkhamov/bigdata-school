@@ -1,0 +1,60 @@
+####
+## Copy ProducerDemo class
+####
+
+
+####
+## Write ProducerCallbackDemo class
+####
+
+Add callback option to .send method
+write onCompletion method
+add for loop
+
+
+
+class ProducerCallbackDemo:
+##################################
+package kz.beeline.bigdata.amadraimov.KafkaProducer;
+
+import org.apache.kafka.clients.producer.*;
+import org.apache.kafka.common.serialization.StringSerializer;
+
+import java.sql.Timestamp;
+import java.util.Date;
+import java.util.Properties;
+
+public class ProducerCallbackDemo {
+    public static void main(String[] args) {
+        String bootstrapServers = "127.0.0.1:9092";
+        Properties properties = new Properties();
+        properties.setProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+        properties.setProperty(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
+        properties.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
+
+        KafkaProducer<String, String> producer = new KafkaProducer<String, String>(properties);
+
+        for (int i = 0; i < 15; i++) {
+            ProducerRecord<String, String> record = new ProducerRecord<String, String>("test_01",
+                    "message from idea " + i);
+
+            producer.send(record, new Callback() {
+                public void onCompletion(RecordMetadata recordMetadata, Exception e) {
+                    if (e == null) {
+                        Date date = new Date(new Timestamp(recordMetadata.timestamp()).getTime());
+                        System.out.println("Topic: " + recordMetadata.topic());
+                        System.out.println("Partition: " + recordMetadata.partition());
+                        System.out.println("Offset: " + recordMetadata.offset());
+                        System.out.println("Timestamp: " + date.toString());
+                    } else {
+                        System.out.println("Exception: " + e.getMessage());
+                    }
+                }
+            });
+        }
+        producer.flush();
+        producer.close();
+    }
+}
+##################################
+

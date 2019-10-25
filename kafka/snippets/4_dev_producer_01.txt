@@ -1,0 +1,82 @@
+####
+## Create new project
+####
+
+Create New project
+Import kafka-clients dependency from Maven
+    google: maven kafka
+    open kafka-clients repo
+    copy maven dependency
+    paste to pom.xml
+    import
+Import slf4j-simple dependency from Maven
+    google: maven kafka
+    open slf4j-simple repo
+    copy maven dependency
+    paste to pom.xml
+    import
+Create package (ex. kz.beeline.bigdata.amadraimov)
+Create Producer package (kz.beeline.bigdata.amadraimov.ProducerDemo)
+Create ProducerDemo Class
+Run test hello
+
+
+####
+## Write ProducerDemo class
+####
+
+Write Kafka properties
+    open kafka configuration documetation (https://kafka.apache.org/documentation/#configuration)
+    properties hardcode way:
+        String bootstrapServers = "localhost:9092";
+        Properties properties = new Properties();
+        properties.setProperty("bootstrap.servers", bootstrapServers);
+        properties.setProperty("key.serializer", StringSerializer.class.getName());
+        properties.setProperty("value.serializer", StringSerializer.class.getName());
+    use ProducerConfig class
+        String bootstrapServers = "localhost:9092";
+        Properties properties = new Properties();
+        properties.setProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+        properties.setProperty(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
+        properties.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
+Write Producer
+        KafkaProducer<String, String> producer = new KafkaProducer<String, String>(properties);
+Send message
+        ProducerRecord<String, String> record =
+            new ProducerRecord<String, String>("test_03", "message from idea 03");
+        producer.send(record);
+        producer.flush();
+        producer.close();
+
+
+class ProducerDemo:
+##################################
+package kz.beeline.bigdata.amadraimov.KafkaProducer;
+
+import org.apache.kafka.clients.producer.KafkaProducer;
+import org.apache.kafka.clients.producer.ProducerConfig;
+import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.common.serialization.StringSerializer;
+
+import java.util.Properties;
+
+public class ProducerDemo {
+    public static void main(String[] args) {
+        String bootstrapServers = "localhost:9092";
+        Properties properties = new Properties();
+        properties.setProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+        properties.setProperty(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
+        properties.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
+
+        KafkaProducer<String, String> producer = new KafkaProducer<String, String>(properties);
+
+        ProducerRecord<String, String> record = new ProducerRecord<String, String>("test_03",
+                                                    "message from idea 03");
+
+        producer.send(record);
+        producer.flush();
+        producer.close();
+    }
+}
+##################################
+
